@@ -5,4 +5,9 @@ import 'package:interview_project/feature/countries/domain/entity/country_entity
 abstract class CountryRepository {
   Future<Either<Failure, List<CountryEntity>>> getCountries();
   Future<Either<Failure, List<CountryEntity>>> serachCountries(String query);
+
+  // Favorites
+  Future<void> toggleFavorite(CountryEntity country);
+  Future<List<CountryEntity>> getFavoriteCountries();
+  Future<bool> isFavorite(String countryName);
 }

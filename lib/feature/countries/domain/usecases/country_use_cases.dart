@@ -20,3 +20,30 @@ class SearchCountriesUseCase {
     return _countryRepository.serachCountries(query);
   }
 }
+
+class ToggleFavoriteCountryUseCase {
+  final CountryRepository _repository;
+  ToggleFavoriteCountryUseCase({required CountryRepository repository}) : _repository = repository;
+
+  Future<void> execute(CountryEntity country) {
+    return _repository.toggleFavorite(country);
+  }
+}
+
+class GetFavoriteCountriesUseCase {
+  final CountryRepository _repository;
+  GetFavoriteCountriesUseCase({required CountryRepository repository}) : _repository = repository;
+
+  Future<List<CountryEntity>> execute() {
+    return _repository.getFavoriteCountries();
+  }
+}
+
+class IsFavoriteCountryUseCase {
+  final CountryRepository _repository;
+  IsFavoriteCountryUseCase({required CountryRepository repository}) : _repository = repository;
+
+  Future<bool> execute(String countryName) {
+    return _repository.isFavorite(countryName);
+  }
+}

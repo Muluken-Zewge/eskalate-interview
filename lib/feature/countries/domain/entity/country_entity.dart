@@ -3,7 +3,7 @@ class CountryEntity {
   final String flag;
   final String region;
   final String subRegion;
-  final double population;
+  final int population;
   final double area;
   final List<String> timeZones;
 

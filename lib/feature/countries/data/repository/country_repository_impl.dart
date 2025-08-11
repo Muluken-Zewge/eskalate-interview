@@ -25,6 +25,7 @@ class CountryRepositoryImpl implements CountryRepository {
       }
       return Right(_cachedCountries);
     } catch (e) {
+      print('error: ${e.toString()}');
       return Left(Failure(errormessage: "Failed to fetch countries"));
     }
   }

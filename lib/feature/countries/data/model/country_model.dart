@@ -7,7 +7,7 @@ class CountryModel {
   final String flag;
   final String region;
   final String subRegion;
-  final double population;
+  final int population;
   final double area;
   final List<String> timeZones;
 
@@ -25,11 +25,11 @@ class CountryModel {
     return CountryModel(
       name: json['name']['common'] as String,
       flag: json['flags']['png'] as String,
-      region: json['region'] as String,
-      subRegion: json['subregion'] as String,
-      population: json['population'] as double,
-      area: json['area'] as double,
-      timeZones: json['timezones'] as List<String>,
+      region: json['region'] as String? ?? '',
+      subRegion: json['subregion'] as String? ?? '',
+      population: (json['population'] as num).toInt(),
+      area: (json['area'] as num).toDouble(),
+      timeZones: (json['timezones'] as List<dynamic>).map((tz) => tz.toString()).toList(),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interview_project/feature/countries/domain/entity/country_entity.dart';
 import 'package:interview_project/feature/countries/presentation/bloc/country/country_bloc.dart';
 import 'package:interview_project/feature/countries/presentation/bloc/favotite/favorite_bloc.dart';
+import 'package:interview_project/feature/countries/presentation/screens/country_detail_screen.dart';
 import 'favorite_screen.dart';
 
 class CountryListScreen extends StatefulWidget {
@@ -14,7 +15,6 @@ class CountryListScreen extends StatefulWidget {
 
 class _CountryListScreenState extends State<CountryListScreen> {
   final TextEditingController _searchController = TextEditingController();
-  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -25,13 +25,6 @@ class _CountryListScreenState extends State<CountryListScreen> {
 
   void _onSearchChanged(String query) {
     context.read<CountryBloc>().add(SearchCountriesEvent(query: query));
-  }
-
-  void _onNavTapped(int index) {
-    setState(() => _selectedIndex = index);
-    if (index == 1) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoriteScreen()));
-    }
   }
 
   @override
@@ -77,7 +70,6 @@ class _CountryListScreenState extends State<CountryListScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -91,7 +83,7 @@ class _CountryListScreenState extends State<CountryListScreen> {
           hintText: "Search countries...",
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           filled: true,
-          fillColor: Colors.white.withOpacity(0.9),
+          fillColor: Colors.white.withValues(alpha: .9),
           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
         ),
@@ -112,60 +104,54 @@ class _CountryListScreenState extends State<CountryListScreen> {
             final country = countries[index];
             final isFavorite = favoriteNames.contains(country.name);
 
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.15), blurRadius: 6, spreadRadius: 1)],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      country.flag,
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, size: 40, color: Colors.grey),
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => CountryDetailScreen(country: country)));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: .15), blurRadius: 6, spreadRadius: 1)],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        country.flag,
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, size: 40, color: Colors.grey),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    country.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Population: ${country.population.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}",
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                  IconButton(
-                    icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: Colors.red),
-                    onPressed: () {
-                      context.read<FavoriteBloc>().add(ToggleFavoriteEvent(country));
-                    },
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      country.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Population: ${country.population.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}",
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                    IconButton(
+                      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: Colors.red),
+                      onPressed: () {
+                        context.read<FavoriteBloc>().add(ToggleFavoriteEvent(country));
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },
         );
       },
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return BottomNavigationBar(
-      currentIndex: _selectedIndex,
-      onTap: _onNavTapped,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: "Favorites"),
-      ],
     );
   }
 }

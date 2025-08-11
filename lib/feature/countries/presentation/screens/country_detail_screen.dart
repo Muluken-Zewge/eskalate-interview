@@ -66,7 +66,7 @@ class CountryDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.15), blurRadius: 6, spreadRadius: 1)],
+                boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: .15), blurRadius: 6, spreadRadius: 1)],
               ),
               child: Column(
                 children: [

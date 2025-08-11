@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:interview_project/feature/countries/domain/entity/country_entity.dart';
 
 class CountryModel {
@@ -21,6 +20,7 @@ class CountryModel {
     required this.timeZones,
   });
 
+  /// For API JSON
   factory CountryModel.fromJson(Map<String, dynamic> json) {
     return CountryModel(
       name: json['name']['common'] as String,
@@ -33,13 +33,29 @@ class CountryModel {
     );
   }
 
-  // convert model to dart Map<Sting, dynamic> for json serialization
+  /// For reading from local storage or any plain map
+  factory CountryModel.fromMap(Map<String, dynamic> map) {
+    return CountryModel(
+      name: map['name'] as String,
+      flag: map['flag'] as String,
+      region: map['region'] as String? ?? '',
+      subRegion: map['subRegion'] as String? ?? '',
+      population: (map['population'] as num).toInt(),
+      area: (map['area'] as num).toDouble(),
+      timeZones: (map['timeZones'] as List<dynamic>).map((tz) => tz.toString()).toList(),
+    );
+  }
+
+  /// Convert model to Map for storage
   Map<String, dynamic> toMap() {
     return {'name': name, 'flag': flag, 'region': region, 'subRegion': subRegion, 'population': population, 'area': area, 'timeZones': timeZones};
   }
 
-  // convert to json string for local storage
+  /// Convert model to JSON String for storage
   String toJson() => json.encode(toMap());
+
+  /// Convert JSON string back to CountryModel
+  factory CountryModel.fromJsonString(String source) => CountryModel.fromMap(json.decode(source));
 
   CountryEntity mapToEntity() {
     return CountryEntity(name: name, flag: flag, region: region, subRegion: subRegion, population: population, area: area, timeZones: timeZones);
